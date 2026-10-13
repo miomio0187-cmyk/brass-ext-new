@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6b8f8a">
+<title>BRASS+ ✚ 拡張機能</title>
+<style>
+:root{--c:#6b8f8a;--soft:#eef4f2;--soft2:#f7faf9;--text:#263331;--muted:#70807d;--line:#dbe5e2;--danger:#b85c62;--white:#fff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:var(--text);background:linear-gradient(135deg,var(--soft2),var(--soft))}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 16px}
+.brand{display:flex;align-items:center;gap:10px}.brand h1{margin:0;font-size:22px;letter-spacing:.06em}.brand small{color:var(--muted)}
+nav{display:flex;gap:7px;overflow:auto;padding:10px 12px;background:rgba(255,255,255,.85);border-bottom:1px solid var(--line);position:sticky;top:61px;z-index:19}
+nav button{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:var(--muted)}
+nav button.active{background:var(--c);color:#fff;border-color:var(--c)}
+main{max-width:980px;margin:auto;padding:18px 14px 90px}
+.hero{padding:6px 2px 14px}.hero h2{margin:0 0 4px;font-size:24px}.hero p{margin:0;color:var(--muted)}
+.card{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:18px;padding:15px;margin:12px 0;box-shadow:0 5px 20px rgba(42,65,61,.05)}
+.card h3{margin:0 0 11px;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 14px;color:var(--text)}
+.btn.primary{background:var(--c);border-color:var(--c);color:#fff}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.small{padding:6px 10px;font-size:13px;border-radius:10px}
+label{display:block;font-size:13px;color:var(--muted);margin:8px 0 4px}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--c);box-shadow:0 0 0 3px var(--soft)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;background:var(--soft);color:var(--muted)}
+.muted{color:var(--muted);font-size:13px}
+/* 出席 */
+.mark{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:14px}
+.mark.present{background:var(--c);color:#fff;border-color:var(--c)}
+.mark.late{background:#d9b25f;color:#fff;border-color:#d9b25f}
+.mark.absent{background:var(--danger);color:#fff;border-color:var(--danger)}
+.mark.excused{background:#9aa7a4;color:#fff;border-color:#9aa7a4}
+.bar{height:12px;border-radius:999px;background:var(--soft);overflow:hidden}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--c),#8fb3ad);border-radius:999px}
+.streak{font-size:26px;font-weight:700;color:var(--c)}
+table.att{border-collapse:collapse;width:100%}
+table.att th,table.att td{border-bottom:1px solid var(--line);padding:6px 4px;font-size:14px;text-align:center}
+table.att th:first-child,table.att td:first-child{text-align:left;white-space:nowrap}
+.scroll{overflow-x:auto}
+/* チャート */
+.chart{display:flex;align-items:flex-end;gap:14px;height:150px;padding:8px 4px 0}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.chart .col .v{font-size:12px;color:var(--muted)}
+.chart .col .b{width:100%;max-width:64px;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,#8fb3ad,var(--c));min-height:4px}
+/* ゴール */
+.idea{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:var(--soft2)}
+.idea h4{margin:0 0 4px;font-size:15px}
+.vote{border:1px solid var(--c);color:var(--c);background:#fff;border-radius:999px;padding:6px 12px}
+.vote.on{background:var(--c);color:#fff}
+.decided{border:2px solid var(--c);border-radius:16px;padding:14px;background:linear-gradient(135deg,#fff,var(--soft));margin:10px 0}
+/* 体調 */
+.faces{display:flex;gap:8px}
+.faces button{flex:1;font-size:22px;padding:8px 0;border-radius:12px;border:1px solid var(--line);background:#fff}
+.faces button.on{border-color:var(--c);background:var(--soft);box-shadow:0 0 0 3px var(--soft)}
+.alert{border-radius:14px;padding:11px 13px;margin:8px 0;font-size:14px;border:1px solid}
+.alert.high{background:#fbeeee;border-color:#e7c3c6;color:#7c3d42}
+.alert.mid{background:#fbf3e4;border-color:#e8d5ae;color:#6d5a2a}
+.alert.ok{background:#ecf5f2;border-color:#cfe0db;color:#3f5a54}
+.disclaimer{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);margin-top:12px;padding-top:8px}
+/* 相談 */
+.consult{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:#fff}
+.consult .head{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.consult .body{white-space:pre-wrap;margin:8px 0;font-size:14px}
+.reply{border-top:1px dashed var(--line);margin-top:8px;padding-top:8px}
+.reply .r{background:var(--soft2);border-radius:10px;padding:8px 10px;margin:6px 0;font-size:13px}
+.tag{font-size:11px;color:#fff;background:var(--c);border-radius:999px;padding:2px 9px}
+.footnote{color:var(--muted);font-size:12px;text-align:center;padding:20px 0 40px}
+.sos{background:#fbeeee;border:1px solid #e7c3c6;color:#7c3d42;border-radius:14px;padding:10px 12px;font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="top"><div class="brand"><h1>BRASS+ ✚</h1><small>拡張機能デモ(出席率・月一目標・体調・相談室)</small></div></div>
+<nav id="nav"></nav>
+<main>
+  <div class="hero"><h2 id="pageTitle"></h2><p id="pageDesc"></p></div>
+  <section id="pg-attendance" class="page"></section>
+  <section id="pg-goals" class="page"></section>
+  <section id="pg-health" class="page"></section>
+  <section id="pg-consult" class="page"></section>
+</main>
+<div class="footnote">BRASS+ 拡張機能デモ — 本体アプリには現時点で未組み込み(デプロイは別途必要)</div>
+
+<script>
+/* ===== 基盤 ===== */
+const $=(s)=>document.querySelector(s);
+const state={view:'attendance',me:localStorage.getItem('BPX_ME')||'',parts:['Fl','Cl','Sax','Tp','Tb','Hr','Euph','Perc','その他'],month:new Date().toISOString().slice(0,7)};
+const api=(p,o)=>fetch('/api'+p,Object.assign({headers:{'Content-Type':'application/json'}},o,{body:o&&o.body?JSON.stringify(o.body):undefined})).then(r=>r.json().then(d=>{if(!r.ok)throw new Error(d.error||'error');return d}));
+const clientId=(()=>{let c=localStorage.getItem('BPX_CLIENT');if(!c){c='c-'+Math.random().toString(36).slice(2,10);localStorage.setItem('BPX_CLIENT',c)}return c})();
+const esc=(s)=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const todayJST=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Tokyo'}).format(new Date());
+
+const VIEWS={
+  attendance:{t:'出席率',d:'パートごとの出席率を見える化して、出る気スイッチを入れるページ'},
+  goals:{t:'月一目標',d:'みんなの案を集めて投票、月の目標を一つに決めよう'},
+  health:{t:'体調管理',d:'毎日のコンディションを記録して、無理のない練習をサポート'},
+  consult:{t:'お悩み相談室',d:'部活の悩みを気軽に相談できる匿名OKの掲示板'}
+};
+function go(v){state.view=v;render()}
+function render(){
+  const nav=$('#nav');
+  nav.innerHTML=Object.keys(VIEWS).map(k=>`<button class="${state.view===k?'active':''}" onclick="go('${k}')">${VIEWS[k].t}</button>`).join('');
+  Object.keys(VIEWS).forEach(k=>$('#pg-'+k).style.display=(state.view===k?'block':'none'));
+  $('#pageTitle').textContent=VIEWS[state.view].t;$('#pageDesc').textContent=VIEWS[state.view].d;
+  ({attendance:renderAttendance,goals:renderGoals,health:renderHealth,consult:renderConsult})[state.view]();
+}
+function meBox(extra){
+  return `<div class="card"><div class="row"><b>私の名前</b><input id="meName" style="max-width:180px" value="${esc(state.me)}" placeholder="例: ふくちー"><button class="btn small primary" onclick="saveMe()">保存</button>${extra||''}<span class="muted">${esc(state.month)} のデータを表示</span></div></div>`;
+}
+function saveMe(){const v=$('#meName').value.trim();state.me=v;localStorage.setItem('BPX_ME',v);render()}
+
+/* ===== 出席率 ===== */
+const MARK={present:['出席','○'],late:['遅刻','△'],absent:['欠席','×'],excused:['公欠','休']};
+async function renderAttendance(){
+  const el=$('#pg-attendance');
+  let members=[],att=[];
+  try{[members,att]=await Promise.all([api('/members'),api('/attendance?month='+state.month)])}catch(e){el.innerHTML='<div class="card">サーバーに接続できません</div>';return}
+  const days=[...new Set(att.map(a=>a.date))].sort();
+  const rateOf=(l)=>{if(!l.length)return null;const sc=l.reduce((s,a)=>s+({present:1,late:.5,absent:0,excused:1}[a.status]||0),0);return Math.round(sc/l.length*100)};
+  const partRates=state.parts.map(p=>{const ms=members.filter(m=>m.part===p);const rs=ms.map(m=>rateOf(att.filter(a=>a.memberId===m.id)));const ok=rs.filter(r=>r!=null);return{part:p,count:ms.length,rate:ok.length?Math.round(ok.reduce((s,r)=>s+r,0)/ok.length):null}}).filter(x=>x.count);
+  const byPart=partRates.length?`<div class="card"><h3>📊 パート別 出席率(${esc(state.month)})</h3>
+    <div class="chart">${partRates.map(p=>`<div class="col"><span class="v">${p.rate==null?'—':p.rate+'%'}</span><div class="b" style="height:${p.rate==null?2:Math.max(4,p.rate)}%"></div><span class="pill">${esc(p.part)}·${p.count}人</span></div>`).join('')}</div>
+    ${partRates.map(p=>`<div style="margin:8px 0"><div class="row" style="justify-content:space-between"><span>${esc(p.part)}</span><b>${p.rate==null?'データなし':p.rate+'%'}</b></div><div class="bar"><span style="width:${p.rate||0}%"></span></div></div>`).join('')}</div>`:'';
+  const myLogs=state.me?att.filter(a=>{const m=members.find(x=>x.id===a.memberId);return m&&m.name===state.me}):[];
+  const myRate=rateOf(myLogs);
+  let streak=0;const set=new Set(myLogs.filter(a=>a.status==='present').map(a=>a.date));
+  let d=new Date(todayJST+'T00:00:00');
+  while(set.has(d.toISOString().slice(0,10))){streak++;d.setDate(d.getDate()-1)}
+  const myCard=`<div class="grid"><div class="card"><h3>🔥 連続出席ストリーク</h3><div class="streak">${streak} <span style="font-size:14px;color:var(--muted)">日連続!</span></div><p class="muted">${streak>=3?'すごい!この調子で🎵':'練習日に来るとカウントされます'}</p></div>
+  <div class="card"><h3>🎯 今月の出席率</h3><div class="streak">${myRate==null?'—':myRate+'%'}</div><div class="bar"><span style="width:${myRate||0}%"></span></div><p class="muted">目標: 90% ${myRate!=null&&myRate>=90?'🎉達成!':'あと'+Math.max(0,90-myRate||0)+'%'}</p></div></div>`;
+  const rows=members.map(m=>{
+    const cells=days.map(dt=>{const a=att.find(x=>x.date===dt&&x.memberId===m.id);const s=a?a.status:'';
+      return `<td><button class="mark ${s}" title="${s?MARK[s][0]:''}" onclick="setAtt('${dt}','${m.id}','${s?'':'present'}')">${s?MARK[s][1]:'・'}</button></td>`}).join('');
+    const r=rateOf(att.filter(a=>a.memberId===m.id));
+    return `<tr><td>${esc(m.name)}<span class="muted">(${esc(m.part)})</span></td>${cells}<td><b style="color:var(--c)">${r==null?'—':r+'%'}</b></td><td><button class="btn small" onclick="delMember('${m.id}')">削除</button></td></tr>`}).join('');
+  el.innerHTML=meBox()+myCard+byPart+`
+  <div class="card"><h3>➕ メンバーを追加</h3><div class="row"><input id="nmName" placeholder="名前" style="max-width:140px"><select id="nmPart" style="max-width:130px">${state.parts.map(p=>`<option>${p}</option>`).join('')}</select><button class="btn primary" onclick="addMember()">追加</button></div></div>
+  <div class="card"><h3>🗓 出席表(日付のマスをタップして記録 / 出席→遅刻→欠席→公欠→クリア)</h3><div class="scroll"><table class="att"><tr><th>名前</th>${days.map(d=>`<th>${d.slice(5)}</th>`).join('')}<th>率</th><th></th></tr>${rows||'<tr><td colspan="9" class="muted">まだメンバーがいません</td></tr>'}</table></div>
+  <p class="muted">○出席 △遅刻(0.5) ×欠席 休公欠 — タップで切替。欠席の前の日は「代わりの自主練」を決めておこう!</p></div>`;
+}
+async function setAtt(date,memberId,status){try{await api('/attendance',{method:'POST',body:{date,memberId,status}});render()}catch(e){alert(e.message)}}
+async function addMember(){try{await api('/members',{method:'POST',body:{name:$('#nmName').value,part:$('#nmPart').value}});render()}catch(e){alert(e.message)}}
+async function delMember(id){if(!confirm('このメンバーと出席記録を削除しますか?'))return;try{await api('/members/'+id,{method:'DELETE'});render()}catch(e){alert(e.message)}}
+
+/* ===== 月一目標 ===== */
+async function renderGoals(){
+  const el=$('#pg-goals');
+  let data;try{data=await api('/goal-ideas')}catch(e){el.innerHTML='<div class="card">サーバーに接続できません</div>';return}
+  const ideas=(data.ideas||[]).filter(i=>i.status==='open').sort((a,b)=>b.votes.length-a.votes.length);
+  const fin=(data.finalizedGoals||[]).slice().sort((a,b)=>b.decidedAt-a.decidedAt);
+  el.innerHTML=meBox()+`
+  <div class="card"><h3>💡 案を投稿</h3>
+    <label>タイトル</label><input id="gTitle" placeholder="例: パート練を週1回増やす">
+    <label>くわしく</label><textarea id="gDetail" rows="2" placeholder="どうやって取り組むか"></textarea>
+    <div class="row"><select id="gCat">${['技術','出席','団結','その他'].map(c=>`<option>${c}</option>`).join('')}</select>
+    <label style="margin:0"><input type="checkbox" id="gAnon" style="width:auto"> 匿名で投稿</label>
+    <button class="btn primary" onclick="postIdea()">投稿する</button></div></div>
+  <div class="card"><h3>🤖 AIに提案してもらう</h3><p class="muted">現在の出席率や先月の目標をもとに、月一目標の案を3つ提案します(環境変数 AI_API_KEY が設定されていないサーバーでは、内蔵のローカル提案が動きます)。</p><button class="btn" onclick="aiSuggest()">提案をもらう</button><div id="aiBox"></div></div>
+  ${fin.map(g=>`<div class="decided"><span class="pill">${esc(g.month)} の月一目標 ✅</span><h3 style="margin:8px 0 4px">${esc(g.title)}</h3><p class="muted" style="margin:0">${esc(g.detail||'')}</p></div>`).join('')}
+  <div class="card"><h3>🗳 投票(得票順)</h3>${ideas.length?ideas.map(i=>`
+    <div class="idea"><div class="head row" style="justify-content:space-between"><h4>${esc(i.title)} <span class="pill">${esc(i.category)}</span></h4><div class="row"><button class="vote ${i.votes.includes(clientId)?'on':''}" onclick="vote('${i.id}')">${i.votes.includes(clientId)?'✓ 投票済み':'投票'} ${i.votes.length}</button>${i.clientId===clientId?`<button class="btn small" onclick="delIdea('${i.id}')">削除</button>`:''}</div></div>
+    ${i.detail?`<p class="muted" style="margin:6px 0 0">${esc(i.detail)}</p>`:''}<p class="muted" style="margin:6px 0 0">by ${esc(i.author)}</p>
+    ${fin.length?'':i.votes.length?`<button class="btn small primary" style="margin-top:8px" onclick="finalize('${i.id}')">この案に決定する</button>`:''}</div>`).join(''):'<p class="muted">まだ案がありません。1番手の投稿者になろう!</p>'}</div>
+  <p class="muted">※ 月の目標は1ヶ月につき1つ。投票数が一番多い案を「決定」ボタンで正式な月一目標にできます。</p>`;
+}
+async function postIdea(){try{await api('/goal-ideas',{method:'POST',body:{title:$('#gTitle').value,detail:$('#gDetail').value,category:$('#gCat').value,author:state.me||'匿名',anonymous:$('#gAnon').checked,clientId}});render()}catch(e){alert(e.message)}}
+async function vote(id){try{await api(`/goal-ideas/${id}/vote`,{method:'POST',body:{clientId}});render()}catch(e){alert(e.message)}}
+async function finalize(id){if(!confirm('この案を今月の目標に決定しますか?(月の目標は上書きされます)'))return;try{await api('/goal-ideas/finalize',{method:'POST',body:{ideaId:id}});render()}catch(e){alert(e.message)}}
+async function delIdea(id){try{await api(`/goal-ideas/${id}?clientId=${clientId}`,{method:'DELETE'});render()}catch(e){alert(e.message)}}
+async function aiSuggest(){
+  $('#aiBox').innerHTML='<p class="muted">考えています…🤔</p>';
+  let members=[],att=[],data;
+  try{[members,att,data]=await Promise.all([api('/members'),api('/attendance?month='+state.month),api('/goal-ideas')])}catch(e){}
+  const partRates=state.parts.map(p=>{const ms=members.filter(m=>m.part===p);const rs=ms.map(m=>{const l=att.filter(a=>a.memberId===m.id);return l.length?l.reduce((s,a)=>s+({present:1,late:.5,absent:0,excused:1}[a.status]||0),0)/l.length*100:null}).filter(r=>r!=null);return{part:p,rate:rs.length?Math.round(rs.reduce((s,r)=>s+r,0)/rs.length):null}}).filter(x=>x.rate!=null);
+  const lastGoal=(data.finalizedGoals||[]).slice(-1)[0];
+  try{
+    const r=await api('/goal-ideas/ai-suggest',{method:'POST',body:{month:state.month,partRates,lastGoal}});
+    $('#aiBox').innerHTML='<div class="idea">'+r.suggestions.map(s=>`<div style="margin:8px 0"><b>${esc(s.title)}</b><p class="muted" style="margin:2px 0 0">${esc(s.detail||'')}</p><button class="btn small" onclick="useSuggest(this)" data-t="${esc(s.title)}" data-d="${esc(s.detail||'')}">この案を投稿フォームに入れる</button></div>`).join('')+`<p class="muted">提案元: ${r.source==='ai'?'AI':'内蔵ローカル提案'}</p></div>`;
+  }catch(e){$('#aiBox').innerHTML='<p class="muted">提案を取得できませんでした</p>'}
+}
+function useSuggest(b){$('#gTitle').value=b.dataset.t;$('#gDetail').value=b.dataset.d;window.scrollTo({top:0,behavior:'smooth'})}
+
+/* ===== 体調管理 ===== */
+const FACES=['😖','😕','😐','🙂','😄'];
+const LABELS=['体調','睡眠時間(時間)','唇・息の調子'];
+async function renderHealth(){
+  const el=$('#pg-health');
+  let logs=[];try{if(state.me)logs=await api('/health-logs?name='+encodeURIComponent(state.me))}catch(e){}
+  const t=logs.find(l=>l.date===todayJST);
+  const sel=(id,label,min,max,step)=>`<label>${label}</label><input type="range" id="${id}" min="${min}" max="${max}" step="${step||1}"><span class="muted" id="${id}_v"></span>`;
+  el.innerHTML=meBox()+`
+  <div class="card"><h3>📝 今日(${todayJST})のコンディションを記録</h3>
+    <label>体調</label><div class="faces" id="fCond">${FACES.map((f,i)=>`<button data-v="${i+1}">${f}</button>`).join('')}</div>
+    <label>睡眠時間: <b id="sl_v">${t?t.sleep:''}</b> 時間</label><input type="range" id="sl" min="0" max="12" step="0.5" value="${t?t.sleep||7:7}">
+    <label>唇・息の調子</label><div class="faces" id="fLips">${FACES.map((f,i)=>`<button data-v="${i+1}">${f}</button>`).join('')}</div>
+    <label>メモ(任意)</label><input id="hNote" placeholder="例: 喉が少し痛い">
+    <div class="row" style="margin-top:10px"><button class="btn primary" onclick="saveHealth()">記録する</button><span class="muted">同じ日は上書き保存されます</span></div>
+    <p class="disclaimer">※ この機能は医療アドバイスではありません。体調が悪いときや長引くときは、保護者・指導者・医療機関に相談してください。</p></div>
+  <div class="card"><h3>🚨 アラート</h3><div id="alerts"><p class="muted">読み込み中…</p></div></div>
+  <div class="card"><h3>📈 最近の記録</h3>${logs.length?logs.slice(0,14).map(l=>`<div class="idea"><b>${l.date}</b> <span class="pill">${FACES[(l.condition||3)-1]} 体調${l.condition}</span> <span class="pill">😴${l.sleep}h</span> <span class="pill">👄${l.lips}</span>${l.note?`<p class="muted" style="margin:4px 0 0">${esc(l.note)}</p>`:''}</div>`).join(''):'<p class="muted">まだ記録がありません</p>'}</div>`;
+  let cond=t?t.condition:0,lips=t?t.lips:0;
+  const paint=(id,v)=>[...document.querySelectorAll('#'+id+' button')].forEach(b=>b.classList.toggle('on',+b.dataset.v===v));
+  $('#fCond').onclick=e=>{if(e.target.dataset.v){cond=+e.target.dataset.v;paint('fCond',cond)}};
+  $('#fLips').onclick=e=>{if(e.target.dataset.v){lips=+e.target.dataset.v;paint('fLips',lips)}};
+  $('#sl').oninput=e=>$('#sl_v').textContent=e.target.value;
+  paint('fCond',cond);paint('fLips',lips);
+  try{const alerts=await api('/health-alerts'+(state.me?'?name='+encodeURIComponent(state.me):''));
+    $('#alerts').innerHTML=alerts.map(a=>`<div class="alert ${a.level}">${esc(a.text)}</div>`).join('')}catch(e){$('#alerts').innerHTML='<p class="muted">取得できませんでした</p>'}
+}
+async function saveHealth(){
+  if(!state.me){alert('まず上の「私の名前」を保存してください');return}
+  try{await api('/health-logs',{method:'POST',body:{name:state.me,date:todayJST,condition:+($('#fCond .on')?.dataset.v||3),sleep:+$('#sl').value,lips:+($('#fLips .on')?.dataset.v||3),note:$('#hNote').value}});render()}catch(e){alert(e.message)}
+}
+
+/* ===== お悩み相談室 ===== */
+const TAGS=['部活の人間関係','練習・技術','時間割・勉強との両立','パート内のこと','その他'];
+async function renderConsult(){
+  const el=$('#pg-consult');
+  let list=[];try{list=await api('/consults')}catch(e){}
+  el.innerHTML=meBox()+`
+  <div class="sos">🙏 大切なこと: いじめ・体の痛み・心がつらいときは、まず保護者・担任・部の顧問の先生など、大人に相談してください。この掲示板はあくまで部員同士の話し合いの場です。</div>
+  <div class="card"><h3>✉️ 相談を投稿(匿名OK)</h3>
+    <label>タイトル</label><input id="cTitle" placeholder="例: パート練の連絡が行き届かない">
+    <label>内容</label><textarea id="cBody" rows="3" placeholder="こまごま書いてOK"></textarea>
+    <div class="row"><select id="cTag">${TAGS.map(t=>`<option>${t}</option>`).join('')}</select>
+    <label style="margin:0"><input type="checkbox" id="cAnon" style="width:auto" checked> 匿名で投稿</label>
+    <button class="btn primary" onclick="postConsult()">投稿する</button></div></div>
+  <div id="cList">${list.length?list.map(c=>`
+    <div class="consult"><div class="head"><b>${esc(c.title)}</b><span class="tag">${esc(c.tag)}</span></div>
+    <p class="muted" style="margin:4px 0 0">by ${esc(c.author)} · ${new Date(c.createdAt).toLocaleString('ja-JP')}</p>
+    <div class="body">${esc(c.body)}</div>
+    <div class="row"><button class="btn small" onclick="toggleReply('${c.id}')">💬 返信 (${c.replies.length})</button>
+    <button class="btn small" onclick="flag('${c.id}')">🚩 通報 (${c.flags||0})</button>
+    ${c.clientId===clientId?`<button class="btn small danger" onclick="delConsult('${c.id}')">削除</button>`:''}</div>
+    <div class="reply" id="rp-${c.id}" style="display:none">
+      ${c.replies.map(r=>`<div class="r"><b>${esc(r.name)}</b>: ${esc(r.body)}</div>`).join('')}
+      <div class="row" style="margin-top:6px"><input id="ri-${c.id}" placeholder="返信を書く" style="flex:1"><label style="margin:0"><input type="checkbox" id="ra-${c.id}" style="width:auto" checked>匿名</label><button class="btn small primary" onclick="reply('${c.id}')">送信</button></div>
+    </div></div>`).join(''):'<p class="muted">まだ投稿がありません。最初の相談を投稿してみよう!</p>'}</div>`;
+}
+async function postConsult(){try{await api('/consults',{method:'POST',body:{title:$('#cTitle').value,body:$('#cBody').value,tag:$('#cTag').value,author:state.me||'匿名',anonymous:$('#cAnon').checked,clientId}});render()}catch(e){alert(e.message)}}
+function toggleReply(id){const b=$('#rp-'+id);b.style.display=b.style.display==='none'?'block':'none'}
+async function reply(id){try{await api(`/consults/${id}/reply`,{method:'POST',body:{body:$('#ri-'+id).value,author:state.me||'匿名',anonymous:$('#ra-'+id).checked}});render()}catch(e){alert(e.message)}}
+async function flag(id){if(!confirm('この投稿を通報しますか?(通報が2回で非表示になります)'))return;try{const r=await api(`/consults/${id}/flag`,{method:'POST',body:{}});alert(r.hidden?'通報により非表示になりました':'通報を受け付けました('+r.flags+'回目)');render()}catch(e){alert(e.message)}}
+async function delConsult(id){try{await api(`/consults/${id}?clientId=${clientId}`,{method:'DELETE'});render()}catch(e){alert(e.message)}}
+
+render();
+</script>
+</body>
+</html>
